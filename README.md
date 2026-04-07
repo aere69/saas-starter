@@ -45,7 +45,9 @@ This project demonstrates multi‑tenancy, RBAC, subscription billing, observabi
 - Structured JSON logging
 - Request correlation IDs
 
-## 🏗️ Architecture Overview
+## 🏗️ Architecture
+
+### Architecture Overview
 
 ![Architecture Overview](./docs/image/architecture.png "Architecture Overview")
 
@@ -69,6 +71,109 @@ This project demonstrates multi‑tenancy, RBAC, subscription billing, observabi
 │ PostgreSQL (RLS or Schemas)     │
 │ Redis Cache / Broker            │
 └─────────────────────────────────┘
+```
+
+### High-Level Architecture Diagram
+
+![Architecture High-Level](./docs/image/architecture-high-level.png "Architecture Detail")
+
+```txt
+                          ┌────────────────────────────────────┐
+                          │            Clients                 │
+                          │  SPA / Web / Mobile / Postman      │
+                          └────────────────────────────────────┘
+                                           │
+                                           ▼
+                          ┌────────────────────────────────────┐
+                          │        API Gateway Layer           │
+                          │        FastAPI Application         │
+                          │  - Routing                         │
+                          │  - Auth (JWT/OAuth2)               │
+                          │  - Tenant Resolution (header/sub)  │
+                          │  - Request Logging & Tracing       │
+                          └────────────────────────────────────┘
+                                           │
+                                           ▼
+                 ┌────────────────────────────────────────────────────┐
+                 │              Application Services                  │
+                 │                                                    │
+                 │  ┌──────────────────────────────────────────────┐  │
+                 │  │              Identity Service                │  │
+                 │  │  - Users                                     │  │
+                 │  │  - Authentication                            │  │
+                 │  │  - Password Management                       │  │
+                 │  └──────────────────────────────────────────────┘  │
+                 │                                                    │
+                 │  ┌──────────────────────────────────────────────┐  │
+                 │  │           Tenant Management Service          │  │
+                 │  │  - Tenant Lifecycle                          │  │
+                 │  │  - Tenant Config & Limits                    │  │
+                 │  └──────────────────────────────────────────────┘  │
+                 │                                                    │
+                 │  ┌──────────────────────────────────────────────┐  │
+                 │  │           Billing & Subscription             │  │
+                 │  │  - Plans & Pricing                           │  │
+                 │  │  - Stripe Integration                        │  │
+                 │  │  - Webhook Handling                          │  │
+                 │  └──────────────────────────────────────────────┘  │
+                 │                                                    │
+                 │  ┌──────────────────────────────────────────────┐  │
+                 │  │          Application Domain Service          │  │
+                 │  │   (e.g., Projects / Assets / Workflows)      │  │
+                 │  │  - Tenant-Scoped CRUD                        │  │
+                 │  │  - Business Rules                            │  │
+                 │  └──────────────────────────────────────────────┘  │
+                 └────────────────────────────────────────────────────┘
+                                           │
+                                           ▼
+                 ┌────────────────────────────────────────────────────┐
+                 │            Async Processing & Integration          │
+                 │                                                    │
+                 │  ┌──────────────────────────────────────────────┐  │
+                 │  │              Worker Processes                │  │
+                 │  │  - Celery / Dramatiq                         │  │
+                 │  │  - Email Notifications                       │  │
+                 │  │  - Billing Sync                              │  │
+                 │  │  - Cleanup / Maintenance                     │  │
+                 │  └──────────────────────────────────────────────┘  │
+                 │                                                    │
+                 │  ┌──────────────────────────────────────────────┐  │
+                 │  │               Message Broker                 │  │
+                 │  │               (Redis / Queue)                │  │
+                 │  └──────────────────────────────────────────────┘  │
+                 └────────────────────────────────────────────────────┘
+                                           │
+                                           ▼
+     ┌────────────────────────────────────────────────────────────────────────┐
+     │                         Data & Platform Layer                          │
+     │                                                                        │
+     │  ┌───────────────────────────┐   ┌──────────────────────────────────┐  │
+     │  │       PostgreSQL          │   │            Redis                 │  │
+     │  │  - Multi-Tenant (RLS/     │   │  - Cache                         │  │
+     │  │    Schema-per-Tenant)     │   │  - Task Broker                   │  │
+     │  └───────────────────────────┘   └──────────────────────────────────┘  │
+     │                                                                        │
+     │  ┌───────────────────────────┐   ┌──────────────────────────────────┐  │
+     │  │       Azure Key Vault     │   │        Azure Storage             │  │
+     │  │  - JWT Signing Keys       │   │  - File / Export Storage         │  │
+     │  │  - Secrets & Config       │   │                                  │  │
+     │  └───────────────────────────┘   └──────────────────────────────────┘  │
+     │                                                                        │
+     │  ┌───────────────────────────┐   ┌──────────────────────────────────┐  │
+     │  │   Observability Stack     │   │        Stripe (External)         │  │
+     │  │  - OpenTelemetry          │   │  - Billing & Payments            │  │
+     │  │  - Prometheus / Grafana   │   │  - Webhooks → Billing Service    │  │
+     │  │  - Centralised Logging    │   └──────────────────────────────────┘  │
+     │  └───────────────────────────┘                                         │
+     └────────────────────────────────────────────────────────────────────────┘
+
+                          ┌────────────────────────────────────┐
+                          │      Infrastructure as Code        │
+                          │         (Terraform + CI/CD)        │
+                          │  - Azure Resources                 │
+                          │  - Environments (dev/prod)         │
+                          │  - Automated Deployments           │
+                          └────────────────────────────────────┘
 ```
 
 ## 📁 Folder Structure
