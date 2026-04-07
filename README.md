@@ -126,6 +126,10 @@ infra/
     cd.yml
 ```
 
+## Database Schema
+
+[Database Schema Blueprint](./docs/database-schema.md)
+
 ## 🔐 Security
 
 - JWT signing keys stored in Azure Key Vault
