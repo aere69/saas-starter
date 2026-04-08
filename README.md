@@ -270,6 +270,8 @@ Cloud (Azure)
 
 GitHub Actions deploys on merge to `main`
 
+[GitHub Actions & CI/CD explained](./docs/github-actions.md)
+
 ## 🗺️ Roadmap
 
 - Custom domains per tenant
