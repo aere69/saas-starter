@@ -1,0 +1,7 @@
+project_name        = "saas-starter"
+environment         = "prod"
+location            = "westeurope"
+resource_group_name = "rg-saas-starter-prod"
+container_image     = "ghcr.io/andres/saas-starter-api:prod"
+postgres_sku_name   = "GP_Standard_D2s_v3"
+redis_sku_name      = "Standard"

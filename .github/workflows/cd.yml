@@ -1,0 +1,63 @@
+# -------------------------------------------------
+# This workflow:
+# - Deploys to Azure
+# - Runs Terraform init/plan/apply
+# - Uses environment‑specific variables
+# - Deploys the container image built in CI
+# It supports dev and prod via GitHub Environments.
+# -------------------------------------------------
+
+name: CD
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy (dev or prod)"
+        required: true
+        type: choice
+        options:
+          - dev
+          - prod
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download image tag
+        uses: actions/download-artifact@v4
+        with:
+          name: image-tag
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        working-directory: infra/terraform
+        run: terraform init \
+          -backend-config="resource_group_name=${{ secrets.TFSTATE_RG }}" \
+          -backend-config="storage_account_name=${{ secrets.TFSTATE_STORAGE }}" \
+          -backend-config="container_name=tfstate" \
+          -backend-config="key=${{ github.event.inputs.environment }}.tfstate"
+
+      - name: Terraform Plan
+        working-directory: infra/terraform
+        run: terraform plan \
+          -var-file="environments/${{ github.event.inputs.environment }}/terraform.tfvars" \
+          -var="container_image=ghcr.io/${{ github.repository }}/api:$(cat image-tag.txt)"
+
+      - name: Terraform Apply
+        working-directory: infra/terraform
+        run: terraform apply -auto-approve \
+          -var-file="environments/${{ github.event.inputs.environment }}/terraform.tfvars" \
+          -var="container_image=ghcr.io/${{ github.repository }}/api:$(cat image-tag.txt)"
