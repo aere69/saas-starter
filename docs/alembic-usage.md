@@ -6,7 +6,7 @@ Alembic is the database migration engine for SQLAlchemy.
 
 It solves one core problem:
 
-    Your database schema changes over time, and you need a safe, versioned, automated way to evolve it across all environments.
+>Your database schema changes over time, and you need a safe, versioned, automated way to evolve it across all environments.
 
 **Summary:** Alembic is the schema migration engine that keeps your database in sync with your application code.
 It provides versioned, reversible, automated migrations that make your SaaS platform safe, reproducible, and production‑ready.
