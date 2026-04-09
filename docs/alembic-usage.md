@@ -12,7 +12,7 @@ It solves one core problem:
 It provides versioned, reversible, automated migrations that make your SaaS platform safe, reproducible, and production‑ready.
 It belongs at the project root, with migration files stored in `alembic/versions/` and your models in `app/models/`.
 
-## Alembic gives you
+## ⭐ Alembic gives you
 
 ### ✔ Versioned schema migrations
 
