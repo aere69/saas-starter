@@ -1,0 +1,36 @@
+fastapi
+uvicorn[standard]
+sqlalchemy>=2.0
+asyncpg
+alembic
+pydantic
+pydantic-settings
+python-dotenv
+
+httpx
+redis
+celery
+kombu
+
+passlib[bcrypt]
+python-jose[cryptography]
+
+prometheus-client
+opentelemetry-api
+opentelemetry-sdk
+opentelemetry-instrumentation-fastapi
+opentelemetry-instrumentation-logging
+opentelemetry-exporter-otlp
+
+jinja2
+
+stripe
+
+# Optional: background tasks / workers
+rq
+redis
+
+# Optional: testing
+pytest
+pytest-asyncio
+httpx
