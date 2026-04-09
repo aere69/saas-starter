@@ -235,6 +235,8 @@ infra/
 
 [Database Schema Blueprint](./docs/database-schema.md)
 
+[Alembic - schema migration engine setup & usage](./docs/alembic-usage.md)
+
 ## 🔐 Security
 
 - JWT signing keys stored in Azure Key Vault
